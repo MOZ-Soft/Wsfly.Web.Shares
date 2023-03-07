@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Wsfly.Ajax</title>
+	<meta charset="utf-8" />
+    <style type="text/css">
+        body{ margin:0; padding:0;}
+    </style>
+    <script src="../Jquery/Jquery-1.7.1.min.js"></script>
+    <script src="Javascript.Wsfly.js"></script>
+</head>
+<body>  
+    <a href="#" id="aCallTest">测试调用Ajax.Call</a>
+    <script type="text/javascript">
+        $(function () {
+            $("#aCallTest").click(function () {
+                Wsfly.Ajax.Call("Test", { NickName: "张三" }, function (result) {
+                    var dt = ToJson(result.Data);
+                    alert(dt[0]["Message"])
+                })
+            });
+        });
+    </script>
+</body>
+</html>

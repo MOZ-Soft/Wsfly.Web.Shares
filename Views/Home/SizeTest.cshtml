@@ -1,0 +1,95 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=100%,height=device-height,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <link rel="Shortcut Icon" type="images/x-icon" href="/favicon.ico" />
+    <link rel="Bookmark" type="images/x-icon" href="/favicon.ico" />
+
+    <title>页面尺寸测试</title>
+
+    <style type="text/css">
+        /* 超小设备（手机，小于 768px） */
+        /* Bootstrap 中默认情况下没有媒体查询 */
+
+        /* 小型设备（平板电脑，768px 起） */
+        @Html.Raw("@")media only screen and (min-width: 768px) {
+            #divPageSize { background:red; color:white !important;}
+        }
+        /* 中型设备（台式电脑，992px 起） */
+        @Html.Raw("@")media only screen and (min-width: 992px) {
+            #divPageSize { background:yellow; color:black !important;}
+        }
+        /* 大型设备（大台式电脑，1200px 起） */
+        @Html.Raw("@")media only screen and (min-width: 1200px) {
+            #divPageSize { background:blue; color:white !important;}
+        }
+    </style>
+</head>
+<body>
+    <div id="divPageSize" style="float:left; margin:20px; padding:20px;">
+        CSS 3:<br />
+        media only screen<br />
+        media only screen and (min-width: 768px) { background:red }<br />
+        media only screen and (min-width: 992px) { background:yellow }<br />
+        media only screen and (min-width: 1200px) { background:blue }<br />
+    </div>
+    <div style="clear:both; margin:20px; padding:20px;">
+        @Html.Raw(Request.UserAgent)<br />
+        App:<span id="spanApp"></span>
+    </div>
+    <div id="divInfo" style="clear:both; margin:20px; padding:20px;">
+    </div>
+
+    <script type="text/javascript">
+        function IsWeixinOrAlipay() {
+            var ua = window.navigator.userAgent;
+            if (ua.indexOf("MicroMessenger") > 0) {
+                return "WeiXin";
+            }
+            if (ua.indexOf("Alipayclient") > 0) {
+                return "Alipay";
+            }
+            return "false";
+        }
+
+        document.getElementById("spanApp").innerHTML = IsWeixinOrAlipay();
+
+        function ShowInfo() {
+            var msg = "";
+
+            msg += "网页可见区域宽：" + document.body.clientWidth + "<br />";
+            msg += "网页可见区域高：" + document.body.clientHeight + "<br />";
+            msg += "网页可见区域宽：" + document.body.offsetWidth + "(包括边线的宽) <br />";
+            msg += "网页可见区域高：" + document.body.offsetHeight + "(包括边线的宽) <br />";
+            msg += "网页正文全文宽：" + document.body.scrollWidth + "<br />";
+            msg += "网页正文全文高：" + document.body.scrollHeight + "<br />";
+            msg += "网页被卷去的高：" + document.body.scrollTop + "<br />";
+            msg += "网页被卷去的左：" + document.body.scrollLeft + "<br />";
+            msg += "网页正文部分上：" + window.screenTop + "<br />";
+            msg += "网页正文部分左：" + window.screenLeft + "<br />";
+            msg += "屏幕分辨率的宽：" + window.screen.width + "<br />";
+            msg += "屏幕分辨率的高：" + window.screen.height + "<br />";
+            msg += "屏幕可用工作区宽度：" + window.screen.availWidth + "<br />";
+            msg += "屏幕可用工作区高度：" + window.screen.availHeight + "<br />";
+            msg += "屏幕缩放因子：" + window.devicePixelRatio + "<br />";
+            msg += "屏幕逻辑分辨率：" + (window.screen.width * window.devicePixelRatio) + "(缩放因子与物理分辨率的乘积) <br />";
+
+            document.getElementById("divInfo").innerHTML = msg;
+        };
+        ShowInfo();
+
+        window.onresize = function () {
+            ShowInfo();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>Wsfly.DB 浏览器数据库操作</title>
+	    <meta charset="utf-8" />
+        <style type="text/css">
+            body{ margin:0; padding:0;}
+        </style>
+        <script src="../Jquery/jquery-3.1.1.min.js"></script>
+        <script src="Javascript.Wsfly.DB.js"></script>
+        <script>
+            var data = [
+                { "key": "a", "spid": 100, "SPMC": "AAA" },
+                { "key": "b", "spid": 101, "SPMC": "BBB" },
+                { "key": "c", "spid": 102, "SPMC": "CCC" },
+                { "key": "d", "spid": 103, "SPMC": "DDD" },
+                { "key": "e", "spid": 104, "SPMC": "EEE" },
+                { "key": "f", "spid": 105, "SPMC": "FFF" },
+            ];
+
+            var db = new WsflyDB();
+            alert("是否支持indexedDB：" + db.IsSupport);
+            //db.Drop();
+            //db.OpenDB();
+
+            if (db.IsSupport) {
+                //添加数据
+                db.InsertArray(data);
+                //查询
+                db.Query("b", function (result) {
+                    alert(result.spid)
+                });
+
+                //更新整个对象
+                db.Update("c", { "key": "c", "spid": 102, "SPMC": "CCC2" });
+                //查询
+                db.Query("c", function (result) {
+                    alert(result.spid + ":" + result.SPMC);
+                });
+
+                //更新单个值
+                db.UpdateValue("d", "SPMC", "DDD3");
+                //查询
+                db.Query("d", function (result) {
+                    alert(result.spid + ":" + result.SPMC);
+                });
+
+                //删除
+                db.Delete("e")
+            }
+        </script>
+    </head>
+    <body>
+    
+    </body>
+</html>

@@ -1,0 +1,115 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Wsfly.Tips 迷你提示条</title>
+	<meta charset="utf-8" />
+    <style type="text/css">
+        body{ margin:0; padding:0;}
+    </style>
+    <script src="Javascript.Wsfly.Tips.js"></script>
+    <script>
+        function ShowInfo(msg) {
+            //消息
+            Wsfly.Tips.Info(msg,3,true);
+        }
+        function ShowOk(msg) {
+            //成功
+            Wsfly.Tips.Ok(msg, 2, false);
+        }
+        function ShowError(msg) {
+            //错误
+            Wsfly.Tips.Error(msg, 5);
+        }
+        function ShowWait(msg) {
+            //等待
+            Wsfly.Tips.Wait(msg);
+            window.setTimeout(function () {
+                Wsfly.Tips.Ok("等待结束！");
+            }, 3000);
+        }
+        function ShowConfirm(msg) {
+            //确认
+            Wsfly.Tips.Confirm(msg, 0, function () {
+                alert("确认");
+                Wsfly.Tips.Wait("已确认，正在提交...");
+                window.setTimeout(function () {
+                    Wsfly.Tips.Ok("提交成功");
+                }, 3000);
+            }, function () {
+                alert("取消");
+            });
+        }
+        function ShowBar(msg) {
+            //不要背景层
+            Wsfly.Tips.Info(msg, 100000, false);
+        }
+    </script>
+</head>
+<body>
+    <div style="padding:20px;">
+        <p>&nbsp;</p>
+
+
+        <div style="padding:10px 0;"><b>演示：</b></div>
+        <a href="javascript:ShowInfo('弹出消息提示');">消息</a>&nbsp; 
+        <a href="javascript:ShowOk('弹出成功提示');">成功</a>&nbsp; 
+        <a href="javascript:ShowError('弹出错误提示');">错误</a>&nbsp; 
+        <a href="javascript:ShowWait('请稍候，正在加载...');">等待</a>&nbsp; 
+        <a href="javascript:ShowConfirm('是否确定立即提交？');">确认</a>&nbsp; 
+        <a href="javascript:ShowBar('没有背景层');">无背景</a>&nbsp; 
+
+
+
+        <div style="padding:50px 0 0 0;">
+            <div style="padding:0 0 10px 0;"><b>遮档：</b></div>
+            <input value="输入框" />
+            <select>
+                <option>下拉选项1</option>
+                <option>下拉选项2</option>
+            </select>
+        </div>
+        <div style="padding:50px 0 0 0;">
+            <b>下载地址：</b><br />
+            <a href="http://wsfly.com/CodeShareDetail.aspx?id=24" target="_blank">http://wsfly.com/CodeShareDetail.aspx?id=24</a>
+        </div>
+
+        <div style="padding:50px 0 0 0;">
+            <b>使用说明：</b><br />
+            引用：http://demo.wsfly.com/wsfly.tips/Javascript.Wsfly.Tips.js<br />
+            图标：默认使用的是Base64转码的图标，可从JS配置中替换图标路径<br />
+
+        </div>
+
+        <div style="padding:50px 0 0 0;">
+            <b>图标：</b><br />
+            <img title="info.png" style="VERTICAL-ALIGN: middle" alt="info.png" src="http://wsfly.com/Uploads/Images/20161030/6361338660344442703303218.png" />&nbsp;
+            <img title="success.png" style="VERTICAL-ALIGN: middle" alt="success.png" src="http://wsfly.com/Uploads/Images/20161030/6361338660869444329899313.png" />&nbsp;
+            <img title="error.png" style="VERTICAL-ALIGN: middle" alt="error.png" src="http://wsfly.com/Uploads/Images/20161030/6361338661380388626239513.png" />&nbsp;
+            <img title="wait.gif" style="VERTICAL-ALIGN: middle" alt="wait.gif" src="http://wsfly.com/Uploads/Images/20161030/6361338661625705021823174.gif" />&nbsp;
+            <img title="confirm.png" style="VERTICAL-ALIGN: middle" alt="confirm.png" src="http://wsfly.com/Uploads/Images/20161030/6361338661981957929733896.png" />
+        </div>
+
+        <div style="padding:50px 0 0 0;">
+            <b>参数说明：</b><br />
+            msg：消息内容<br />
+            seconds：多少秒后隐藏(移除)<br />
+            type：类型 1-消息；2-成功；3-错误；4-等待；5-确认窗口<br />
+            okCallback：确认按钮回调<br />
+            cancelCallback：取消按钮回调<br />
+        </div>
+        <div style="padding:50px 0 0 0;">
+            <b>Flash：</b><br />
+            <embed src="http://static.video.qq.com/TPout.swf?vid=w0019r2q4z1&auto=0" allowFullScreen="true" quality="high" width="480" height="400" align="middle" allowScriptAccess="always" translate="yes" wmode="transparent" type="application/x-shockwave-flash"></embed>
+            <br />
+            Flash透明： wmode="transparent"
+        </div>
+        <div style="padding:50px 0 0 0;">
+            <b>IFrame：</b><br />
+            <iframe width="480" height="480" src="http://www.wsfly.com/"></iframe>
+        </div>
+        <p style="height:3000px;">&nbsp;</p>
+        <p>尾部</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,248 @@
+﻿
+@{
+    string siteName = AppConfig.GetString("站点名称");
+
+    ViewBag.Title = siteName;
+    Layout = "~/Views/Shared/EmptyLayoutPage.cshtml";
+}
+
+@{
+    //默认共享目录为 /_Shares/
+    string WebModules_FileShareDirectoryPath = "/_Shares";
+    WebModules_FileShareDirectoryPath = WebModules_FileShareDirectoryPath.TrimEnd('/');
+    //展示类型
+    int type = Request.GetInt("type");
+
+    //下级目录
+    string dirs = Request.GetString("dirs");
+    string dirRoot = AppDomain.CurrentDomain.BaseDirectory.Trim('\\');
+    string shareDirRoot = dirRoot + WebModules_FileShareDirectoryPath.Replace('/', '\\');
+    WebModules_FileShareDirectoryPath = shareDirRoot + dirs.Replace('/', '\\');
+}
+
+@*头部 BEGIN*@
+@section Header{
+    <style type="text/css">
+        html,body{ width:100%; height:100%; min-width:0; overflow:hidden; margin:0;padding:0px;font-family:"Microsoft YaHei",YaHei,"微软雅黑",SimHei,"黑体";font-size:14px; background:#f2f2f2;}
+        .WsflyPage{ width:100%; height:100%; overflow:hidden;}
+        .FileSharePage{ width:100%; height:100%; overflow:hidden; zoom:1;}
+        .FileSharePage .Header{ height:40px; line-height:40px; background:#27ae60; padding:0 10px; color:#fff;}
+        .FileSharePage .Header a{ color:white; text-decoration:none;}
+        .FileSharePage .Header span{ line-height:40px; color:#eee; padding:0px 5px;}
+        .FileSharePage .Header .Actions{ float:right;}
+        .FileSharePage .Header .Actions ul{ overflow:hidden; zoom:1;}
+        .FileSharePage .Header .Actions ul li{ float:left; margin-left:10px;}
+        .FileSharePage .Header .Actions ul li a{ text-decoration:none;}
+        .FileSharePage .SearchBar{ height:30px; line-height:30px; background:#b9dcd8; padding:5px 10px; color:#c7ecee; position:relative;}
+        .FileSharePage .SearchBar .txt{ width:100%; height:26px; background:#fff; border-radius:5px; border:none; padding:0 5px; box-sizing:border-box; outline:none;}
+        .FileSharePage .Containers{ overflow:hidden; zoom:1; overflow-y:auto;}
+        .FileSharePage .Containers ul li .Name{ word-break:keep-all; word-spacing:normal; word-wrap:normal; white-space:nowrap;}
+        .FileSharePage .Containers ul li .Name .Attrs{ color:gray; font-size:12px;}
+        .FileSharePage .Containers ul li .Name .Links{ font-size:12px; color:black;}
+        .FileSharePage .Containers ul li .Name .Links a{ color:blue;}
+    </style>
+    @if(type == 1)
+    {
+        //显示为矩形阵列
+        <style type="text/css">
+            .FileSharePage .Containers ul{ overflow:hidden; zoom:1; padding:10px;}
+            .FileSharePage .Containers ul li{ width:120px; height:120px; float:left; overflow:hidden; zoom:1; text-align:center; border:solid 1px #ddd; border-radius:5px; margin-bottom:10px; margin-right:10px; background:#fff;}
+            .FileSharePage .Containers ul li:nth-child(even){ background:#f2f2f2;}
+            .FileSharePage .Containers ul li:hover{ border-color:#999;}
+            .FileSharePage .Containers ul li img{ width:50px; text-align:center;}
+            .FileSharePage .Containers ul li a{ font-size:12px; text-align:center;}
+            .FileSharePage .Containers ul li .Cover{ width:120px; height:50px; overflow:hidden; zoom:1; line-height:50px; text-align:center; font-weight:bold;}
+            .FileSharePage .Containers ul li.dir{ background:#fff;}
+            .FileSharePage .Containers ul li.dir .Cover{ padding-top:20px;}
+            .FileSharePage .Containers ul li .Name{ line-height:30px; position:relative;}
+            .FileSharePage .Containers ul li .Name .Attrs{ background:#fff; border-radius:5px; overflow:hidden; zoom:1; display:block; height:20px; line-height:20px;  font-size:8px;}
+            .FileSharePage .Containers ul li .Name .Links{ background:#fff; border-radius:5px; overflow:hidden; zoom:1; display:block; height:20px; line-height:20px;  font-size:8px;}
+        </style>
+    }
+    else
+    {
+        //显示为列表
+        <style type="text/css">
+            .FileSharePage .Containers ul{ overflow:hidden; zoom:1;}
+            .FileSharePage .Containers ul li{ height:30px; line-height:30px; overflow:hidden; zoom:1; border-bottom:solid 1px #ccc; padding:5px 0; position:relative; padding-left:125px;}
+            .FileSharePage .Containers ul li:nth-child(even){ background:#e2e2e2;}
+            .FileSharePage .Containers ul li .Cover{ position:absolute; left:0; top:5px; width:120px; height:30px; line-height:30px; font-weight:bold; text-align:center;}
+            .FileSharePage .Containers ul li .Cover img{ width:30px; height:30px;}
+            .FileSharePage .Containers ul li .Name{ position:relative; white-space:nowrap}
+        </style>
+    }
+    <script type="text/javascript">
+        $(function () {
+            var winHeight = $(window).height();
+            $(".Containers").height(winHeight - 80);
+            $(window).resize(function () {
+                var winHeight = $(window).height();
+                $(".Containers").height(winHeight - 80);
+            });
+
+            $("#txtSearch").keyup(function (e) {
+                var keywords = $(this).val();
+                if (keywords == "") {
+                    $(".Containers ul li").show();
+                    return;
+                }
+                $(".Containers ul li").each(function () {
+                    var text = $(this).data("text");
+                    if (text.indexOf(keywords) >= 0) {
+                        $(this).show();
+                    }
+                    else {
+                        $(this).hide();
+                    }
+                });
+            });
+        });
+        var _audio = null;
+        var _playVoicePath = null;
+        function PlayVoice(voicePath) {
+            if (_audio != null && _playVoicePath == voicePath) {
+                _audio.pause();
+                _audio = null;
+                return;
+            }
+
+            if (_audio != null) {
+                _audio.pause();
+                _audio = null;
+            }
+
+            _playVoicePath = voicePath;
+            _audio = new Audio(voicePath);
+            _audio.play();
+        }
+    </script>
+}
+@*头部 END*@
+
+@{
+    //获取所有目录和文件
+    List<string> dirList = Wsfly.ERP.Web.Shares.FileHandler.GetDirectoryFileList(WebModules_FileShareDirectoryPath, 1);
+    List<string> fileList = Wsfly.ERP.Web.Shares.FileHandler.GetDirectoryFileList(WebModules_FileShareDirectoryPath, 2);
+
+    <div class="FileSharePage">
+        <div class="Header">
+            导航：<a href="?type=@type">根目录</a>
+            @{
+                if (!string.IsNullOrWhiteSpace(dirs))
+                {
+                    string[] dirArrays = dirs.Split('/');
+                    string currentDir = "";
+                    foreach (string dirPath in dirArrays)
+                    {
+                        if (string.IsNullOrWhiteSpace(dirPath)) { continue; }
+                        currentDir += "/" + dirPath;
+
+                        <span>></span> <a href="?type=@type&dirs=@(HttpUtility.UrlEncodeUnicode(currentDir))">@dirPath</a>
+                    }
+                }
+            }
+            <div class="Actions">
+                <ul>
+                    @{
+                        if (type == 0)
+                        {
+                            <li><a href="?type=1&dirs=@(HttpUtility.UrlEncodeUnicode(dirs))">矩阵</a></li>
+                        }
+                        else
+                        {
+                            <li><a href="?dirs=@(HttpUtility.UrlEncodeUnicode(dirs))">列表</a></li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="SearchBar">
+            <input id="txtSearch" class="txt" placeholder="输入搜索关键词" />
+        </div>
+        <div class="Containers">
+            <ul>
+                @if (dirList != null && dirList.Count > 0)
+                {
+                    if (dirs.StartsWith("/_Shares")) { dirs = dirs.Substring(7); }
+
+                    foreach (string dir in dirList)
+                    {
+                        string dirUrl = dir.Replace(shareDirRoot, "").Replace("\\", "/");
+                        string dirName = System.IO.Path.GetFileName(dir);
+
+                        <li title="@dirName" class="dir" data-text="@(dirName.ToLower())">
+                            <a href="?type=@type&dirs=@(HttpUtility.UrlEncodeUnicode(dirUrl))">
+                                <div class="Cover"><img src="~/Resources/Images/folder.png" /></div>
+                                <div class="Name">@dirName</div>
+                            </a>
+                        </li>
+                    }
+                }
+                @if (fileList != null && fileList.Count > 0)
+                {
+                    //音频、视频文件后缀
+                    string[] videoFileExts = { "mp4", "swf", "flv", "ogg", "webm" };
+                    string[] video2FileExts = { "ts" };
+                    string[] voiceFileExts = { "mp3", "wav" };
+
+                    foreach (string file in fileList)
+                    {
+                        FileInfo fi = new FileInfo(file);
+                        long fileSize = fi.Length;
+                        string fileSizeStr = fileSize + "B";
+
+                        if (fileSize > 1024 * 1024 * 1024) { fileSizeStr = (fileSize / (double)1024 / (double)1024 / (double)1024).ToString("0.00") + "GB"; }
+                        else if (fileSize > 1024 * 1024) { fileSizeStr = (fileSize / (double)1024 / (double)1024).ToString("0.00") + "MB"; }
+                        else if (fileSize > 1024) { fileSizeStr = (fileSize / (double)1024).ToString("0.00") + "KB"; }
+
+                        string fileUrl = file.Replace(dirRoot, "").Replace("\\", "/");
+                        string downloadUrl = fileUrl;
+                        string fileName = System.IO.Path.GetFileNameWithoutExtension(file);
+                        string fileFullName = System.IO.Path.GetFileName(file);
+                        string fileExt = System.IO.Path.GetExtension(file);
+                        if (!string.IsNullOrWhiteSpace(fileExt))
+                        {
+                            fileExt = fileExt.Trim('.').ToUpper();
+                        }
+
+                        //是否音频、视频文件
+                        bool isVideoFile = videoFileExts.Contains(fileExt.ToLower());
+                        bool isVideo2File = video2FileExts.Contains(fileExt.ToLower());
+                        bool isVoiceFile = voiceFileExts.Contains(fileExt.ToLower());
+                        bool needTarget = true;
+                        if (isVideoFile)
+                        {
+                            fileUrl = "/CKPlayer?video=" + Server.UrlEncode(fileUrl);
+                            //fileUrl = "/VideoPlayer?video=" + Server.UrlEncode(fileUrl);
+                        }
+                        else if (isVideo2File)
+                        {
+                            fileUrl = "/JSMPEGPlayer?video=" + Server.UrlEncode(fileUrl);
+                        }
+                        if (isVoiceFile)
+                        {
+                            needTarget = false;
+                            fileUrl = "javascript:PlayVoice('" + fileUrl + "');";
+                        }
+
+                        <li title="@(fileFullName)" data-text="@(fileFullName.ToLower())">                            
+                            <a href="@(fileUrl)" @(Html.Raw(needTarget ? "target=\"_blank\"" : ""))>
+                                <div class="Cover">@fileExt</div>
+                            </a>
+                            <div class="Name">
+                                <a href="@(fileUrl)" @(Html.Raw(needTarget ? "target=\"_blank\"" : ""))>@fileFullName</a>
+                                <span class="Attrs">
+                                    (@(fileSizeStr))
+                                </span>
+                                <span class="Links">
+                                    [<a href="@(downloadUrl)" target="_blank">下载</a>]
+                                </span>
+                            </div>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+}
+

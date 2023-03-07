@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>@ViewBag.Title</title>
+
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+        <meta content="Powered by Wsfly.com" />
+        <meta content="Copyright (C) 2022 Wsfly.com" />
+        <meta content="Wsfly.ERP.Web.Shares" />
+
+        <link rel="Shortcut Icon" type="images/x-icon" href="/favicon.ico" />
+        <link rel="Bookmark" type="images/x-icon" href="/favicon.ico" />
+
+        @*样式*@
+        <link href="/Resources/Css/Wsfly.CommonStyleSheet.css" rel="stylesheet" />
+        
+        @*脚本*@
+        @*<script src="/Resources/jQuery/jquery-3.1.0.min.js"></script>*@
+        <script type="text/javascript" src="/Resources/jQuery/jquery-1.9.1.min.js"></script>
+
+        <script src="/Resources/Javascript/Javascript.Wsfly.js"></script>
+        <script src="/Resources/Javascript/Javascript.Wsfly.Tips.js"></script>
+        
+        @RenderSection("Header", false)
+    </head>
+    <body>
+        <div class="WsflyPage">
+            @RenderBody()
+        </div>
+    </body>
+</html>

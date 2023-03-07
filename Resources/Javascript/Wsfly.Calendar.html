@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>WsflyCalendar日历</title>
+	    <meta charset="utf-8" />
+        <script src="../Jquery/jquery-1.10.2.min.js"></script>
+        <script src="Jquery.Wsfly.Calendar.js"></script>
+        <script type="text/javascript">
+            $(function () {
+                var wsflyCalendarOptioins = null;
+                $("#wsflyCalendar").WsflyCalendar({
+                    //DefaultDate: new Date("2017-01-01"),  初始默认日期  不设置表示今日
+                    InitedCallback: function (options) {
+                        wsflyCalendarOptioins = options;
+                    },
+                    ChooseDayCallback: function (options) {
+                        //alert(options.ChooseDate)
+                        var html = "选择时间：" + options.ChooseDate;
+                        html += "<br>格式化：" + jQuery.Wsfly.Calendar.ShowFormatDate(options.ChooseDate, "yyyy-MM-dd HH:mm:ss");
+                        $("#divChooseDay").html(html);
+
+                    }
+                });
+
+                var date = new Date();
+                var date1 = new Date();
+                var date2 = new Date(date.setDate(wsflyCalendarOptioins.ChooseDate.getDate() + 1));
+                var date3 = new Date(date.setDate(wsflyCalendarOptioins.ChooseDate.getDate() + 2));
+                
+
+                //将今日标记灰色
+                jQuery.Wsfly.Calendar.SetTagGray(wsflyCalendarOptioins, date1);
+                //将明日标记红色
+                jQuery.Wsfly.Calendar.SetTagRed(wsflyCalendarOptioins, date2);
+                //将后日标记绿色
+                jQuery.Wsfly.Calendar.SetTagGreen(wsflyCalendarOptioins, date3);
+            });
+        </script>
+        <style type="text/css">
+            html,body{ background:#333; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;}
+            .WsflyCalendarBox{ max-width:400px; padding:10px; border-radius:10px; background-color:rgba(255,255,255,0.6);}
+            #divChooseDay{color:white; line-height:60px; text-align:center;}
+        </style>
+    </head>
+    <body>
+        <div id="wsflyCalendar" class="WsflyCalendarBox"></div>
+        <div id="divChooseDay"></div>
+
+        <div style="color:#eee;">
+            <h3>说明：</h3>
+            初始化：
+            <div>
+                1:jQuery扩展初始化
+<pre>
+$("#wsflyCalendar").WsflyCalendar({
+    ChooseDayCallback: function (options) {
+        //选择日期后触发事件
+    }
+});
+</pre>
+            </div>
+            <div>
+                2:初始化
+<pre>
+var wsflyCalendarOptioins = jQuery.Wsfly.Calendar.Init({
+    ContainerId:"wsflyCalendar",    //容器ID
+    ChooseDayCallback: function (options) {
+        //选择日期后触发事件
+    }
+});
+
+</pre>
+                属性：<br />
+                <table border="1" cellpadding="5" cellspacing="0">
+                    <tr>
+                        <th>名称</th>
+                        <th>说明</th>
+                    </tr>
+                    <tr>
+                        <td>Container</td>
+                        <td>容器</td>
+                    </tr>
+                    <tr>
+                        <td>ContainerId</td>
+                        <td>容器ID</td>
+                    </tr>
+                    <tr>
+                        <td>Target</td>
+                        <td>日历对象</td>
+                    </tr>
+                    <tr>
+                        <td>Inited</td>
+                        <td>是否初始化</td>
+                    </tr>
+                    <tr>
+                        <td>DefaultDate</td>
+                        <td>默认日期 不设置时是今日</td>
+                    </tr>
+                    <tr>
+                        <td>ChooseDate</td>
+                        <td>选择日期</td>
+                    </tr>
+                    <tr>
+                        <td>CalendarDate</td>
+                        <td>日历显示月份日期</td>
+                    </tr>
+                    <tr>
+                        <td>CurrentDate</td>
+                        <td>当前日期（自动获取客户端日期）</td>
+                    </tr>
+                    <tr>
+                        <td>AppendedStyle</td>
+                        <td>是否加载样式</td>
+                    </tr>
+                </table>
+                <br /><br />
+                回调函数：<br />
+                <table border="1" cellpadding="5" cellspacing="0">
+                    <tr>
+                        <th>名称</th>
+                        <th>参数</th>
+                        <th>说明</th>
+                    </tr>
+                    <tr>
+                        <td>InitedCallback</td>
+                        <td>options</td>
+                        <td>初始化结束回调</td>
+                    </tr>
+                    <tr>
+                        <td>ChooseDayCallback</td>
+                        <td>options</td>
+                        <td>选择日期回调</td>
+                    </tr>
+                    <tr>
+                        <td>ChooseMonthCallback</td>
+                        <td>options</td>
+                        <td>月份变更回调</td>
+                    </tr>
+                    <tr>
+                        <td>TodayCallback</td>
+                        <td>options</td>
+                        <td>点击今日回调</td>
+                    </tr>
+                </table>
+                <br /><br />
+                标签设置：<br />
+                <table border="1" cellpadding="5" cellspacing="0">
+                    <tr>
+                        <th>名称</th>
+                        <th>参数</th>
+                        <th>说明</th>
+                    </tr>
+                    <tr>
+                        <td>SetTagGray</td>
+                        <td>options,date</td>
+                        <td>灰色标签</td>
+                    </tr>
+                    <tr>
+                        <td>SetTagRed</td>
+                        <td>options,date</td>
+                        <td>红色标签</td>
+                    </tr>
+                    <tr>
+                        <td>SetTagGreen</td>
+                        <td>options,date</td>
+                        <td>绿色标签</td>
+                    </tr>
+                    <tr>
+                        <td>SetTagHidden</td>
+                        <td>options,date</td>
+                        <td>隐藏标签</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

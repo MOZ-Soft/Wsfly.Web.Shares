@@ -1,0 +1,98 @@
+﻿
+@{
+    ViewBag.Title = "CKPlayer";
+    Layout = "~/Views/Shared/EmptyLayoutPage.cshtml";
+}
+
+@{ 
+/*
+    注意：如显示加载失败，则可能的问题：
+    一：如果你是本地视频地址，即服务器是你的，视频是你的，需要检查服务器是否支持该格式的视频，
+        检查的方法是把视频地址放在地址栏里直接打开看看能否下载。
+        如果不能下载，说明你的服务器需要配置MINI类型允许请求。
+        配置方法如：添加 .mp4 application/octet-stream
+
+    二：视频可以下载，但不能播放，需要确认该视频格式是h.264的编码。
+
+    三：如果你是通过网址（包括xml格式的地址），需要检查你的安全策略文件，如果你的根目录下不存在策略文件，
+        请自行放置一个，安全策略文件示例，官方的下载包里提供了一个，名称是：crossdomain.xml，文件名称不能更改，
+        详细的了解可以自己百度搜索。最安全的方法是用浏览器自带的开发者工具进行测试。
+*/
+}
+
+@*接收参数 BEGIN*@
+@{ 
+    //参数
+    string poster = Request.GetString("poster");
+    string videoUrl = Request.GetString("video");
+    string title = Request.GetString("title");
+    int width = Request.GetInt("width");
+    int height = Request.GetInt("height");
+
+    string widthCSS = width > 0 ? width + "px" : "100%";
+    string heightCSS = height > 0 ? height + "px" : "100%";
+    
+    //封面
+    poster = !string.IsNullOrEmpty(poster) ? poster : "";
+
+    if (!string.IsNullOrWhiteSpace(title))
+    {
+        //有传入标题参数
+        ViewBag.Title = title;
+    }
+    else if (!string.IsNullOrWhiteSpace(videoUrl))
+    {
+        //取视频文件的标题
+        videoUrl = Server.UrlDecode(videoUrl);
+        ViewBag.Title = System.IO.Path.GetFileNameWithoutExtension(videoUrl);
+    }
+}
+@*接收参数 END*@
+
+@*头部 BEGIN*@
+@section Header{
+    <style type="text/css">
+        html,body{ width:100%; height:100%; min-width:0; overflow:hidden; margin:0;padding:0px;font-family:"Microsoft YaHei",YaHei,"微软雅黑",SimHei,"黑体";font-size:14px; background:#000;}
+        .WsflyPage{ width:100%; height:100%; overflow:hidden;}
+        .Player{ width:100%; height:100%; overflow:hidden; zoom:1; margin:0 auto; }
+        .Player video{ width:100%; height:100%;}
+    </style>
+    <style type="text/css">
+        .Player{ width:@widthCSS; height:@heightCSS; }
+    </style>
+    <script src="~/Resources/Plug-Ins/ckplayer/ckplayer/ckplayer.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            @*if (typeof (Worker) !== "undefined") {
+                //HTML5
+                var video = document.createElement("video");
+                var source = document.createElement("source");
+                source.setAttribute("src", "@videoUrl");
+                source.setAttribute("type", "video/mp4");
+                video.appendChild(source);
+                //$("#video").append(video);
+            }*@
+
+            //ckplayer
+            var videoObject = {
+                container: "#video",  //容器
+                variable: "player",     //播放函数
+                poster: "@poster",   //封面图片
+                //flashplayer:true,
+                autoplay: true,
+                video: "@videoUrl"
+            };
+            var player = new ckplayer(videoObject);
+        });
+</script>
+}
+@*头部 END*@
+
+@*播放器容器 BEGIN*@
+<div id="video" class="Player">
+    @if (string.IsNullOrWhiteSpace(videoUrl))
+    {
+        <div class="EmptyData">播放视频文件不存在！</div>
+    }
+</div>
+@*播放器容器 END*@
